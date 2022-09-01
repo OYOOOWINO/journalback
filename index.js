@@ -28,9 +28,9 @@ dbConnection().then(res => {
     console.log("DB_CONN_OK")
 }).catch(err => console.log(err));
 
-cron.schedule('* * * * *', async () => {
-    await feedsService();
-  });
+// cron.schedule('* * * * *', async () => {
+//     await feedsService();
+//   });
 app.use(cors())
 app.use(express.json())
 app.use(helmet())
