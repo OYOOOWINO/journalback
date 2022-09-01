@@ -148,6 +148,7 @@ async function feedsService() {
         return;
     } catch (error) {
         console.log(error)
+        return;
     }
 
 }
