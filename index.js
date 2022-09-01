@@ -4,7 +4,7 @@ const express = require('express')
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
 const helmet = require("helmet")
-// const morgan = require("morgan")
+const morgan = require("morgan")
 const cors = require('cors')
 const http = require("http")
 let cron = require('node-cron');
@@ -34,7 +34,7 @@ cron.schedule('* * * * *', async () => {
 app.use(cors())
 app.use(express.json())
 app.use(helmet())
-// app.use(morgan("common"))
+app.use(morgan("common"))
 app.use("/auth", userRoutes)
 app.use("/journal", journalRoutes)
 
