@@ -4,26 +4,29 @@ const Feeds = require('../Models/Feed');
 
 async function sendFeed(user_id, journal) {
     let journal_id = journal._id;
+    let new_feed = {
+        target_id: user_id,
+        content: journal.content,
+        created_at: new Date(journal.created_at)
+    }
+
+    // console.log(new_feed);
 
     if (user_id == journal.creator_is) {
         return;
     }
-    let new_feed = {
-        target_id: user_id,
-        content: journal.content
-    }
-
+    
     try {
         const feed = await new Feeds(new_feed)
         await feed.save()
-            .then((res) => {
-                const journal = Journal.findOne({ _id: journal_id });
-                if (!journal) {
-                    return;
-                }
-                Journal.updateOne({ _id: journal_id }, { shared: true })
-            })
-            console.log("Done 0");
+        const journal = await Journals.findOne({ _id: journal_id });
+        if (!journal) {
+            return;
+        }
+        await Journals.updateOne({ _id: journal_id }, { shared: true })
+
+        // console.log("Done 0");
+
     } catch (error) {
         console.log(error)
     }
@@ -46,7 +49,7 @@ async function sendFeedToUsers(temp_users, temp_journals) {
         return
     }
     local_users.forEach(element => {
-        sendFeed(element._id, temp_journal[0]);
+        sendFeed(element._id, temp_journals[0]);
     })
 }
 
@@ -70,7 +73,7 @@ async function feedsService() {
         //get Number of users & journals
         let users_count = temp_users.length
         let journals_count = temp_journals.length
-        console.log(users_count, journals_count);
+        // console.log(users_count, journals_count);
         let user_index = 0;
         let journal_index = 0;
 
@@ -92,7 +95,7 @@ async function feedsService() {
         if (users_count > 1 && journals_count > 1) {
             if (users_count < journals_count) {
                 while (temp_users.length > 1) {
-                    
+
                     let local_user = temp_users[user_index]
                     let local_journal = temp_journals[journal_index]
                     if (local_user._id = local_journal.creator_id) {
@@ -102,7 +105,7 @@ async function feedsService() {
                         temp_journals.splice(journal_index, 1)
                         temp_users.splice(user_index, 1)
                         journal_index = 0
-                        console.log("Done 2");
+                        // console.log("Done 2");
                     }
                 }
 

@@ -16,6 +16,7 @@ const serverPort = 5000
 
 const userRoutes = require("./Routes/User");
 const journalRoutes = require("./Routes/Journal");
+const feedRoutes = require("./Routes/Feed");
 const {feedsService} = require("./Controllers/RandomShare");
 dotenv.config()
 
@@ -28,7 +29,7 @@ dbConnection().then(res => {
     console.log("DB_CONN_OK")
 }).catch(err => console.log(err));
 
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 0 12 * *', async () => {
     await feedsService();
   });
 app.use(cors())
@@ -37,6 +38,7 @@ app.use(helmet())
 app.use(morgan("common"))
 app.use("/auth", userRoutes)
 app.use("/journal", journalRoutes)
+app.use("/feed", feedRoutes)
 
 //start the web server
 server.listen(process.env.PORT || serverPort, function () {
